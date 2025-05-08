@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us | NewsFusion</title>
+    <style>
+      #overlay {
+        background: #000;
+        opacity: 1;
+        transition: opacity 1s;
+      }
+      #about {
+        opacity: 0;
+        transition: opacity 1s;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f9fa;
+        color: #222;
+      }
+      .container {
+        max-width: 700px;
+        margin: 60px auto;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+        padding: 48px 36px;
+      }
+      h1 {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 18px;
+        letter-spacing: -1px;
+        color: #2a4d69;
+      }
+      p {
+        font-size: 1.18rem;
+        line-height: 1.7;
+        color: #444;
+      }
+      @media (max-width: 600px) {
+        .container {
+          padding: 28px 12px;
+        }
+        h1 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="overlay"></div>
+    <div class="container" id="about">
+      <h1>About Us</h1>
+      <p>
+        Our website is dedicated to providing a balanced perspective on current
+        events by aggregating news stories from both right-leaning and
+        left-leaning media sources. In an era of increasing polarization, we
+        believe it is crucial to present diverse viewpoints, helping readers
+        make informed decisions and develop a more nuanced understanding of the
+        world. By bridging the gap between differing narratives, we aim to
+        foster critical thinking and encourage open, respectful dialogue.
+      </p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const overlay = document.getElementById("overlay");
+        const about = document.getElementById("about");
+        if (localStorage.getItem("aboutFadeIn") === "true") {
+          localStorage.removeItem("aboutFadeIn");
+          overlay.style.opacity = 1;
+          about.style.opacity = 0;
+          setTimeout(() => {
+            overlay.style.transition = "opacity 1s";
+            about.style.transition = "opacity 1s";
+            overlay.style.opacity = 0;
+            about.style.opacity = 1;
+            overlay.addEventListener("transitionend", () => overlay.remove());
+          }, 400);
+        } else {
+          overlay.remove();
+          about.style.opacity = 1;
+        }
+      });
+    </script>
+  </body>
+</html>
