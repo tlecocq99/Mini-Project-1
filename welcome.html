@@ -31,6 +31,16 @@
         opacity: 0;
         transition: opacity 1s ease-in;
       }
+      #header {
+        background: #1c12cc;
+        background: linear-gradient(
+          90deg,
+          rgba(28, 18, 204, 0.9) 0%,
+          rgba(88, 0, 219, 1) 50%,
+          rgba(255, 0, 0, 0.9) 100%
+        );
+        color: white;
+      }
     </style>
   </head>
   <body class="bg-light">
@@ -57,7 +67,7 @@
 
     <!-- News Feed content -->
     <div id="news-feed" class="container py-5">
-      <h2 class="mb-4">Your News Feed</h2>
+      <h2 class="mb-4 text-center" id="header">Your News Feed</h2>
       <!-- Placeholder for articles -->
       <div id="articles" class="row g-4">
         <!-- Articles will be injected here -->
