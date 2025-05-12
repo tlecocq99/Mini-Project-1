@@ -47,6 +47,10 @@
     <!-- Overlay -->
     <div id="overlay"></div>
 
+    <nav class="navbar navbar-light bg-white border-bottom px-3 mb-4">
+      <a class="navbar-brand" href="about.html">About Us</a>
+      <a class="navbar-brand" href="world.html">World News</a>
+    </nav>
     <!-- Main content -->
     <div
       id="main-content"
@@ -68,9 +72,15 @@
     <!-- News Feed content -->
     <div id="news-feed" class="container py-5">
       <h2 class="mb-4 text-center" id="header">Your News Feed</h2>
-      <!-- Placeholder for articles -->
-      <div id="articles" class="row g-4">
-        <!-- Articles will be injected here -->
+      <div class="row">
+        <div class="col-md-6">
+          <h3 class="text-center text-primary">Left-Wing (CNN)</h3>
+          <div id="left-articles" class="row g-4"></div>
+        </div>
+        <div class="col-md-6">
+          <h3 class="text-center text-danger">Right-Wing (Fox News)</h3>
+          <div id="right-articles" class="row g-4"></div>
+        </div>
       </div>
     </div>
 
@@ -119,33 +129,57 @@
             { once: true }
           );
         });
-
         function loadArticles() {
-          // TODO: fetch and render articles
-          const articles = [
-            {
-              title: "Left Source Headline",
-              summary: "Summary from left-leaning source.",
-            },
-            {
-              title: "Right Source Headline",
-              summary: "Summary from right-leaning source.",
-            },
-          ];
-          const container = document.getElementById("articles");
-          articles.forEach((a) => {
-            const col = document.createElement("div");
-            col.className = "col-md-6";
-            col.innerHTML = `
-                 <div class="card">
-                   <div class="card-body">
-                     <h5 class="card-title">${a.title}</h5>
-                     <p class="card-text">${a.summary}</p>
-                   </div>
-                 </div>
-               `;
-            container.appendChild(col);
-          });
+          const endpoints = {
+            left: "https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=aeffaa08edf2448388f90578dcf94683",
+            right:
+              "https://newsapi.org/v2/top-headlines?sources=fox-news&apiKey=aeffaa08edf2448388f90578dcf94683",
+          };
+
+          fetchAndDisplay(endpoints.left, "left-articles");
+          fetchAndDisplay(endpoints.right, "right-articles");
+        }
+
+        function fetchAndDisplay(url, targetId) {
+          fetch(url)
+            .then((res) => {
+              if (!res.ok) throw new Error("Failed to fetch");
+              return res.json();
+            })
+            .then((data) => {
+              const container = document.getElementById(targetId);
+              container.innerHTML = "";
+
+              data.articles.forEach((article) => {
+                const col = document.createElement("div");
+                col.className = "col-12"; // full-width within its side column
+
+                col.innerHTML = `
+          <div class="card h-100">
+            <img src="${
+              article.urlToImage || "https://via.placeholder.com/300x150"
+            }" class="card-img-top" alt="${article.title}" />
+            <div class="card-body">
+              <h5 class="card-title">${article.title}</h5>
+              <p class="card-text">${
+                article.description || "No description available."
+              }</p>
+              <a href="${
+                article.url
+              }" target="_blank" class="btn btn-sm btn-outline-primary">Read More</a>
+            </div>
+          </div>
+        `;
+
+                container.appendChild(col);
+              });
+            })
+            .catch((err) => {
+              console.error(`Error loading ${targetId}:`, err);
+              document.getElementById(
+                targetId
+              ).innerHTML = `<p class="text-danger">Failed to load news.</p>`;
+            });
         }
       });
     </script>
