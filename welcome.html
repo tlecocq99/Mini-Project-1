@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NewsFusion Landing</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      #header {
+        background: #1c12cc;
+        background: linear-gradient(
+          90deg,
+          rgba(28, 18, 204, 0.9) 0%,
+          rgba(88, 0, 219, 1) 50%,
+          rgba(255, 0, 0, 0.9) 100%
+        );
+        color: white;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      #main-content,
+      #nav-bar {
+        opacity: 0;
+        animation: fadeIn 2s ease-in-out forwards;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
+    <nav
+      id="nav-bar"
+      class="navbar navbar-light bg-white border-bottom px-3 mb-4"
+    >
+      <a class="navbar-brand" href="about.html">About Us</a>
+      <a class="navbar-brand" href="world-news.html">🌍 World News</a>
+    </nav>
+    <!-- Main content -->
+    <div
+      id="main-content"
+      class="d-flex flex-column justify-content-center align-items-center vh-100 text-center px-3"
+    >
+      <h1 class="display-3 mb-4">Welcome to NewsFusion</h1>
+      <p class="lead mb-5">
+        Bringing you perspectives from both the left and the right in one
+        unified space.
+      </p>
+      <div>
+        <button id="startBtn" class="btn btn-primary me-2">Get Started</button>
+        <button id="learnBtn" class="btn btn-outline-secondary">
+          Learn More
+        </button>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById("startBtn").onclick = function () {
+      window.location.href = "US-news.html";
+    };
+    document.getElementById("learnBtn").onclick = function () {
+      window.location.href = "about.html";
+    };
+  </script>
+</html>

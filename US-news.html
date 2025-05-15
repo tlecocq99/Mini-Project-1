@@ -3,34 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NewsFusion Landing</title>
+    <title>NewsFusion News Feed</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <style>
-      /* Full-screen overlay */
-      #overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #000;
-        z-index: 9999;
-        transition: opacity 2s ease-out;
-      }
-      /* Hide main content until fade-in completes */
-      #main-content {
-        opacity: 0;
-        transition: opacity 1s ease-out;
-      }
-      /* Hidden news feed initially */
-      #news-feed {
-        opacity: 0;
-        transition: opacity 1s ease-in;
-      }
       #header {
         background: #1c12cc;
         background: linear-gradient(
@@ -41,34 +20,29 @@
         );
         color: white;
       }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      #news-feed,
+      #nav-bar {
+        opacity: 0;
+        animation: fadeIn 2s forwards;
+      }
     </style>
   </head>
   <body class="bg-light">
-    <!-- Overlay -->
-    <div id="overlay"></div>
-
-    <nav class="navbar navbar-light bg-white border-bottom px-3 mb-4">
-      <a class="navbar-brand" href="about.html">About Us</a>
-      <a class="navbar-brand" href="world.html">World News</a>
-    </nav>
-    <!-- Main content -->
-    <div
-      id="main-content"
-      class="d-flex flex-column justify-content-center align-items-center vh-100 text-center px-3"
+    <nav
+      id="nav-bar"
+      class="navbar navbar-light bg-white border-bottom px-3 mb-4"
     >
-      <h1 class="display-3 mb-4">Welcome to NewsFusion</h1>
-      <p class="lead mb-5">
-        Bringing you perspectives from both the left and the right in one
-        unified space.
-      </p>
-      <div>
-        <button id="startBtn" class="btn btn-primary me-2">Get Started</button>
-        <button id="learnBtn" class="btn btn-outline-secondary">
-          Learn More
-        </button>
-      </div>
-    </div>
-
+      <a class="navbar-brand" href="about.html">About Us</a>
+      <a class="navbar-brand" href="world-news.html">🌍 World News</a>
+    </nav>
     <!-- News Feed content -->
     <div id="news-feed" class="container py-5">
       <h2 class="mb-4 text-center" id="header">Your News Feed</h2>
@@ -88,47 +62,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const overlay = document.getElementById("overlay");
-        const main = document.getElementById("main-content");
         const newsFeed = document.getElementById("news-feed");
         const startBtn = document.getElementById("startBtn");
-
-        // Initial intro fade
-        setTimeout(() => {
-          overlay.style.opacity = 0;
-          overlay.addEventListener("transitionend", () => overlay.remove());
-          main.style.opacity = 1;
-        }, 300);
-
-        // Get Started click: fade out main, show feed
-        startBtn.addEventListener("click", () => {
-          main.style.opacity = 0;
-          main.addEventListener(
-            "transitionend",
-            () => {
-              main.remove();
-              newsFeed.style.display = "block";
-              setTimeout(() => {
-                newsFeed.style.opacity = 1;
-              }, 50);
-              loadArticles();
-            },
-            { once: true }
-          );
-        });
-
-        document.getElementById("learnBtn").addEventListener("click", () => {
-          // Placeholder: show info modal or section
-          localStorage.setItem("aboutFadeIn", "true");
-          main.addEventListener(
-            "transitionend",
-            () => {
-              main.remove();
-              window.location.href = "about.html";
-            },
-            { once: true }
-          );
-        });
         function loadArticles() {
           const endpoints = {
             left: "https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=aeffaa08edf2448388f90578dcf94683",
@@ -170,7 +105,6 @@
             </div>
           </div>
         `;
-
                 container.appendChild(col);
               });
             })
@@ -181,6 +115,7 @@
               ).innerHTML = `<p class="text-danger">Failed to load news.</p>`;
             });
         }
+        loadArticles();
       });
     </script>
   </body>
