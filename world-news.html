@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NewsFusion World</title>
+    <title>World News | NewsFusion</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -23,28 +23,50 @@
         );
         color: white;
       }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      #news-feed,
+      #nav-bar {
+        opacity: 0;
+        animation: fadeIn 1.5s forwards;
+      }
     </style>
   </head>
   <body class="bg-light">
     <!-- Navbar -->
-    <nav class="navbar navbar-light bg-white border-bottom px-3 mb-4">
+    <nav
+      id="nav-bar"
+      class="navbar navbar-light bg-white border-bottom px-3 mb-4"
+    >
       <a class="navbar-brand fw-bold" href="US-news.html">🇺🇸 US News</a>
-      <a class="navbar-brand fw-bold" href="world.html">🌍 World News</a>
+      <a class="navbar-brand" href="about.html">About Us</a>
     </nav>
 
     <!-- News Feed -->
     <div id="news-feed" class="container py-5">
       <h2 class="mb-4 text-center" id="header">Your News Feed</h2>
       <div class="row">
-        <div class="col-md-6">
-          <h3 class="text-center text-primary">Left-Wing (BBC / Al Jazeera)</h3>
-          <div id="left-articles" class="row g-4"></div>
+        <!-- Tabs view on small screens -->
+        <div class="d-md-none">
+          <!-- insert tab UI here -->
         </div>
-        <div class="col-md-6">
-          <h3 class="text-center text-danger">
-            Right-Wing (Telegraph / NY Post)
-          </h3>
-          <div id="right-articles" class="row g-4"></div>
+
+        <!-- Side-by-side view on larger screens -->
+        <div class="row d-none d-md-flex">
+          <div class="col-md-6">
+            <h3 class="text-center text-primary">Left-Leaning Media</h3>
+            <div id="left-articles" class="row g-4"></div>
+          </div>
+          <div class="col-md-6">
+            <h3 class="text-center text-danger">Right-Leaning Media</h3>
+            <div id="right-articles" class="row g-4"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -58,43 +80,74 @@
 
         function loadArticles() {
           const endpoints = {
-            left: "https://newsapi.org/v2/top-headlines?sources=bbc-news,al-jazeera-english&apiKey=aeffaa08edf2448388f90578dcf94683",
-            right:
-              "https://newsapi.org/v2/top-headlines?sources=the-australian&apiKey=aeffaa08edf2448388f90578dcf94683",
+            right: {
+              url: "https://content.guardianapis.com/search?section=world&show-fields=thumbnail,trailText&api-key=efaa8126-47fe-4a5b-950d-d4f3d91bc911",
+              type: "guardian",
+            },
+            left: {
+              url: "https://newsapi.org/v2/top-headlines?sources=bbc-news,al-jazeera-english&apiKey=aeffaa08edf2448388f90578dcf94683",
+            },
           };
 
-          fetchAndDisplay(endpoints.left, "left-articles");
-          fetchAndDisplay(endpoints.right, "right-articles");
+          fetchAndDisplay(
+            endpoints.left.url,
+            "left-articles",
+            endpoints.left.type
+          );
+          fetchAndDisplay(
+            endpoints.right.url,
+            "right-articles",
+            endpoints.right.type
+          );
         }
 
-        function fetchAndDisplay(url, targetId) {
+        function fetchAndDisplay(url, targetId, sourceType) {
           fetch(url)
             .then((res) => {
-              if (!res.ok) throw new Error("Failed to fetch");
+              if (!res.ok)
+                throw new Error(`Failed to fetch from ${sourceType}`);
               return res.json();
             })
             .then((data) => {
               const container = document.getElementById(targetId);
               container.innerHTML = "";
 
-              data.articles.forEach((article) => {
+              const articles =
+                sourceType === "guardian"
+                  ? data.response.results
+                  : data.articles;
+
+              articles.forEach((article) => {
                 const col = document.createElement("div");
                 col.className = "col-12";
 
+                let title, imageUrl, summary, link;
+
+                if (sourceType === "guardian") {
+                  title = article.webTitle;
+                  imageUrl =
+                    article.fields?.thumbnail ||
+                    "https://via.placeholder.com/300x150";
+                  summary =
+                    article.fields?.trailText || "No summary available.";
+                  link = article.webUrl;
+                } else {
+                  title = article.title;
+                  imageUrl =
+                    article.urlToImage || "https://via.placeholder.com/300x150";
+                  summary = article.description || "No description available.";
+                  link = article.url;
+                }
+
                 col.innerHTML = `
                   <div class="card h-100">
-                    <img src="${
-                      article.urlToImage ||
-                      "https://via.placeholder.com/300x150"
-                    }" class="card-img-top" alt="${article.title}" />
+                    <img src="${imageUrl}" class="card-img-top" alt="${title}" />
                     <div class="card-body">
-                      <h5 class="card-title">${article.title}</h5>
-                      <p class="card-text">${
-                        article.description || "No description available."
-                      }</p>
-                      <a href="${
-                        article.url
-                      }" target="_blank" class="btn btn-sm btn-outline-primary">Read More</a>
+                      <h5 class="card-title">${title}</h5>
+                      <p class="card-text">${summary}</p>
+                      <a href="${link}" target="_blank" class="btn btn-sm btn-outline-${
+                  sourceType === "guardian" ? "danger" : "primary"
+                }">Read More</a>
                     </div>
                   </div>
                 `;
@@ -103,10 +156,10 @@
               });
             })
             .catch((err) => {
-              console.error(`Error loading ${targetId}:`, err);
+              console.error(`Fetch failed for ${targetId}:`, err);
               document.getElementById(
                 targetId
-              ).innerHTML = `<p class="text-danger">Failed to load news.</p>`;
+              ).innerHTML = `<p class='text-danger'>Failed to load ${sourceType} news.</p>`;
             });
         }
       });

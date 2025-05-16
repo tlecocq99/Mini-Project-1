@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NewsFusion News Feed</title>
+    <title> U.S. News | NewsFusion </title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -31,7 +31,7 @@
       #news-feed,
       #nav-bar {
         opacity: 0;
-        animation: fadeIn 2s forwards;
+        animation: fadeIn 1.5s forwards;
       }
     </style>
   </head>
@@ -40,19 +40,19 @@
       id="nav-bar"
       class="navbar navbar-light bg-white border-bottom px-3 mb-4"
     >
-      <a class="navbar-brand" href="about.html">About Us</a>
       <a class="navbar-brand" href="world-news.html">🌍 World News</a>
+      <a class="navbar-brand" href="about.html">About Us</a>
     </nav>
     <!-- News Feed content -->
     <div id="news-feed" class="container py-5">
       <h2 class="mb-4 text-center" id="header">Your News Feed</h2>
       <div class="row">
         <div class="col-md-6">
-          <h3 class="text-center text-primary">Left-Wing (CNN)</h3>
+          <h3 class="text-center text-primary">Left-Leaning Media</h3>
           <div id="left-articles" class="row g-4"></div>
         </div>
         <div class="col-md-6">
-          <h3 class="text-center text-danger">Right-Wing (Fox News)</h3>
+          <h3 class="text-center text-danger">Right-Leaning Media</h3>
           <div id="right-articles" class="row g-4"></div>
         </div>
       </div>
@@ -62,28 +62,46 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const newsFeed = document.getElementById("news-feed");
-        const startBtn = document.getElementById("startBtn");
+        loadArticles();
         function loadArticles() {
           const endpoints = {
-            left: "https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=aeffaa08edf2448388f90578dcf94683",
-            right:
-              "https://newsapi.org/v2/top-headlines?sources=fox-news&apiKey=aeffaa08edf2448388f90578dcf94683",
+            left: {
+              url: "https://newsapi.org/v2/top-headlines?sources=cnn&apiKey=aeffaa08edf2448388f90578dcf94683",
+              type: "left",
+            },
+            right: {
+              url: "https://newsapi.org/v2/top-headlines?sources=fox-news&apiKey=aeffaa08edf2448388f90578dcf94683",
+              type: "right",
+            },
           };
 
-          fetchAndDisplay(endpoints.left, "left-articles");
-          fetchAndDisplay(endpoints.right, "right-articles");
+          fetchAndDisplay(
+            endpoints.left.url,
+            "left-articles",
+            endpoints.left.type
+          );
+          fetchAndDisplay(
+            endpoints.right.url,
+            "right-articles",
+            endpoints.right.type
+          );
         }
 
-        function fetchAndDisplay(url, targetId) {
+        function fetchAndDisplay(url, targetId, sourceType) {
           fetch(url)
             .then((res) => {
-              if (!res.ok) throw new Error("Failed to fetch");
+              if (!res.ok)
+                throw new Error(`Failed to fetch from ${sourceType}`);
               return res.json();
             })
             .then((data) => {
               const container = document.getElementById(targetId);
               container.innerHTML = "";
+
+              const buttonStyle =
+                sourceType === "left"
+                  ? "btn-outline-primary"
+                  : "btn-outline-danger";
 
               data.articles.forEach((article) => {
                 const col = document.createElement("div");
@@ -101,7 +119,7 @@
               }</p>
               <a href="${
                 article.url
-              }" target="_blank" class="btn btn-sm btn-outline-primary">Read More</a>
+              }" target="_blank" class="btn btn-sm ${buttonStyle}">Read More</a>
             </div>
           </div>
         `;
@@ -115,7 +133,6 @@
               ).innerHTML = `<p class="text-danger">Failed to load news.</p>`;
             });
         }
-        loadArticles();
       });
     </script>
   </body>
