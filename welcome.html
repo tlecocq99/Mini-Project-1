@@ -28,8 +28,7 @@
           opacity: 1;
         }
       }
-      #main-content,
-      #nav-bar {
+      #main-content {
         opacity: 0;
         animation: fadeIn 2s ease-in-out forwards;
       }
@@ -38,14 +37,6 @@
   <body class="bg-light">
     <!-- Overlay -->
     <div id="overlay"></div>
-
-    <nav
-      id="nav-bar"
-      class="navbar navbar-light bg-white border-bottom px-3 mb-4"
-    >
-      <a class="navbar-brand" href="about.html">About Us</a>
-      <a class="navbar-brand" href="world-news.html">🌍 World News</a>
-    </nav>
     <!-- Main content -->
     <div
       id="main-content"
@@ -72,7 +63,7 @@
     };
     document.getElementById("worldBtn").onclick = function () {
       window.location.href = "world-news.html";
-    }
+    };
     document.getElementById("learnBtn").onclick = function () {
       window.location.href = "about.html";
     };
